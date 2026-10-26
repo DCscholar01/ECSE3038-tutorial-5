@@ -21,3 +21,8 @@ class Device(BaseModel):
 
 
 # Your handlers go below this line.
+#GET /devices, every device
+@app.get("/devices")
+async def get_devices():
+    device_list = list(devices.find())
+    return device_list
