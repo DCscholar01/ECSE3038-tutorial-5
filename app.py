@@ -24,13 +24,19 @@ class Device(BaseModel):
 #GET /devices, every device
 @app.get("/devices")
 async def get_devices():
-    device_list = list(devices.find())
+    device_list = list(devices.find({}, {"_id": 0}))
     return device_list
 
-#GET /devices/{device_id}, a specific device
-@app.get("/devices/{device_id}")
-async def get_device(device_id: str):
-    device = devices.find_one({"_id": device_id})
+#GET /devices/{name}, a specific device
+@app.get("/devices/{name}")
+async def get_device(name: str):
+    device = devices.find_one({"name": name}, {"_id": 0})
     if not device:
         raise HTTPException(status_code=404, detail="Device not found")
+    return device
+
+#POST /devices, add a new device
+@app.post("/devices")
+async def add_device(device: Device):
+    devices.insert_one(device.dict())
     return device
